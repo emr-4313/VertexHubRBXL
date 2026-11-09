@@ -11,7 +11,7 @@ export const Route = createRootRoute({
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: APP_NAME },
-      { name: "description", content: "Vertex Hub — Roblox yer ve model dosyaları. İndir, Studio'da aç." },
+      { name: "description", content: "Vertex Hub — Roblox place and model files. Download, then open in Studio." },
       { name: "theme-color", content: "#080808" },
     ],
     links: [
@@ -26,7 +26,7 @@ export const Route = createRootRoute({
     ],
   }),
   component: () => (
-    <html lang="tr" className="dark" suppressHydrationWarning>
+    <html lang="en" className="dark" suppressHydrationWarning>
       <head>
         <HeadContent />
       </head>

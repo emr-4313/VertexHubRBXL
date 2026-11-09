@@ -1,85 +1,43 @@
 export type PlaceExt = "rbxl" | "rbxm";
 
-export type PlaceFile = {
-  id: string;
-  name: string;
-  file: string;
-  downloadName: string;
-  bytes: number;
-  ext: PlaceExt;
-  kind: string;
-  note: string;
-};
-
-export const PLACES: PlaceFile[] = [
-  {
-    id: "realistic",
-    name: "Realistic ACS",
-    file: "Realistic_Acs.rbxl",
-    downloadName: "Realistic_Acs.rbxl",
-    bytes: 31343808,
-    ext: "rbxl",
-    kind: "Yer",
-    note: "Studio'da Dosya → Dosyadan aç.",
-  },
-  {
-    id: "som",
-    name: "som ACS test",
-    file: "somACStest.rbxl",
-    downloadName: "somACStest.rbxl",
-    bytes: 14902584,
-    ext: "rbxl",
-    kind: "Yer",
-    note: "Test yeri. Studio'da Dosya → Dosyadan aç.",
-  },
-  {
-    id: "nuycs",
-    name: "nuycs ACS v2",
-    file: "nuycs_acs_v2.rbxm",
-    downloadName: "nuycs_acs_v2.rbxm",
-    bytes: 12731872,
-    ext: "rbxm",
-    kind: "Model",
-    note: "Model. Studio Explorer'a sürükle.",
-  },
-  {
-    id: "va",
-    name: "V.A. ACS",
-    file: "VA_ACS_Roblox_Studios.rbxl",
-    downloadName: "VA_ACS_Roblox_Studios.rbxl",
-    bytes: 8719022,
-    ext: "rbxl",
-    kind: "Yer",
-    note: "Studio'da Dosya → Dosyadan aç.",
-  },
-  {
-    id: "ots",
-    name: "OTS ACS",
-    file: "OTS_ACS.rbxl",
-    downloadName: "OTS_ACS.rbxl",
-    bytes: 3973813,
-    ext: "rbxl",
-    kind: "Yer",
-    note: "Omuz üstü ACS yeri. Dosyadan aç.",
-  },
-  {
-    id: "aether",
-    name: "Shattered Aether Map",
-    file: "Shattered_Aether_Map.rbxl",
-    downloadName: "Shattered_Aether_Map.rbxl",
-    bytes: 954581,
-    ext: "rbxl",
-    kind: "Harita",
-    note: "Harita yeri. Studio'da Dosya → Dosyadan aç.",
-  },
+/** Drop the file in public/files/, then add one line: name, path, bytes. */
+export const FILES: { name: string; file: string; bytes: number }[] = [
+  { name: "Realistic ACS", file: "realistic-acs.rbxl", bytes: 31343808 },
+  { name: "Untitled Shooter", file: "untitled-shooter.rbxl", bytes: 18262050 },
+  { name: "som ACS", file: "som-acs.rbxl", bytes: 14902584 },
+  { name: "nuycs ACS", file: "nuycs-acs.rbxm", bytes: 12731872 },
+  { name: "Blackout", file: "blackout.rbxl", bytes: 10580801 },
+  { name: "Parkour", file: "parkour.rbxl", bytes: 10131377 },
+  { name: "ACF Neptune", file: "acf-neptune.rbxl", bytes: 10025785 },
+  { name: "ACS Modern", file: "acs-modern.rbxl", bytes: 9206253 },
+  { name: "Solo Showdown", file: "solo-showdown.rbxl", bytes: 9151927 },
+  { name: "V.A. ACS", file: "va-acs.rbxl", bytes: 8719022 },
+  { name: "ACS Gore", file: "acs-gore.rbxl", bytes: 7565584 },
+  { name: "Rat Labs", file: "rat-labs.rbxl", bytes: 4637851 },
+  { name: "OTS ACS", file: "ots-acs.rbxl", bytes: 3973813 },
+  { name: "BMW M3 E92", file: "bmw-m3-e92.rbxm", bytes: 3502443 },
+  { name: "A Core Game", file: "a-core-game.rbxl", bytes: 3420095 },
+  { name: "Bite by Night", file: "bite-by-night.rbxl", bytes: 3009618 },
+  { name: "BMW M2", file: "bmw-m2.rbxm", bytes: 2975387 },
+  { name: "BMW M3 G81", file: "bmw-m3-g81.rbxm", bytes: 2640341 },
+  { name: "BMW M3 Touring", file: "bmw-m3-touring.rbxm", bytes: 2311519 },
+  { name: "Alpha Engine", file: "alpha-engine.rbxm", bytes: 1577361 },
+  { name: "Shattered Aether", file: "shattered-aether.rbxl", bytes: 954581 },
+  { name: "Training Facility", file: "training.rbxl", bytes: 706259 },
+  { name: "Retro Studio", file: "retro-studio.rbxl", bytes: 245332 },
+  { name: "FiveM Loading", file: "fivem-loading.rbxl", bytes: 88601 },
+  { name: "Persona UI", file: "persona-ui.rbxm", bytes: 22904 },
+  { name: "Solo UI", file: "solo-ui.rbxm", bytes: 16537 },
 ];
 
+export function extOf(file: string): PlaceExt {
+  return file.endsWith(".rbxm") ? "rbxm" : "rbxl";
+}
+
 export function formatBytes(bytes: number): string {
-  if (bytes < 1024 * 1024) {
-    return `${Math.max(1, Math.round(bytes / 1024))} KB`;
-  }
+  if (bytes < 1024 * 1024) return `${Math.max(1, Math.round(bytes / 1024))} KB`;
   const mb = bytes / (1024 * 1024);
   return `${mb >= 10 ? mb.toFixed(1) : mb.toFixed(2)} MB`;
 }
 
-export const ARCHIVE_BYTES = PLACES.reduce((sum, file) => sum + file.bytes, 0);
+export const ARCHIVE_BYTES = FILES.reduce((sum, file) => sum + file.bytes, 0);

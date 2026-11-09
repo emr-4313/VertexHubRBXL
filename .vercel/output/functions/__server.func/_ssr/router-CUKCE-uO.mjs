@@ -1,11 +1,20 @@
-import { i as __toESM, n as __exportAll } from "../_runtime.mjs";
+import { o as __toESM } from "../_runtime.mjs";
 import { K as require_react, _ as createFileRoute, b as require_jsx_runtime, d as Scripts, f as HeadContent, g as lazyRouteComponent, h as Outlet, m as createRouter, v as createRootRoute, y as useRouter } from "../_libs/@tanstack/react-router+[...].mjs";
-import { t as TriangleAlert } from "../_libs/lucide-react.mjs";
+import { n as TriangleAlert } from "../_libs/lucide-react.mjs";
 import { a as union, i as string, n as number, r as object, t as literal } from "../_libs/zod.mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/router-Doelu8UY.js
-var router_Doelu8UY_exports = /* @__PURE__ */ __exportAll({ getRouter: () => getRouter });
+//#region node_modules/.nitro/vite/services/ssr/assets/router-CUKCE-uO.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();
+var __defProp = Object.defineProperty;
+var __exportAll = (all, no_symbols) => {
+	let target = {};
+	for (var name in all) __defProp(target, name, {
+		get: all[name],
+		enumerable: true
+	});
+	if (!no_symbols) __defProp(target, Symbol.toStringTag, { value: "Module" });
+	return target;
+};
 var FALLBACK_MESSAGE = "An unexpected error occurred. Try reloading the page.";
 function errorMessage(error) {
 	if (error instanceof Error && error.message) return error.message;
@@ -331,9 +340,9 @@ function PreviewHostBridge() {
 	}, [router]);
 	return null;
 }
-var styles_default = "/assets/styles-DwZyH92X.css";
+var styles_default = "/assets/styles-C-MEdxix.css";
 var APP_NAME = "Vertex Hub";
-var Route$1 = createRootRoute({
+var Route$3 = createRootRoute({
 	head: () => ({
 		meta: [
 			{ charSet: "utf-8" },
@@ -344,7 +353,7 @@ var Route$1 = createRootRoute({
 			{ title: APP_NAME },
 			{
 				name: "description",
-				content: "Vertex Hub — Roblox yer ve model dosyaları. İndir, Studio'da aç."
+				content: "Vertex Hub — Roblox place and model files. Download, then open in Studio."
 			},
 			{
 				name: "theme-color",
@@ -376,7 +385,7 @@ var Route$1 = createRootRoute({
 		]
 	}),
 	component: () => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("html", {
-		lang: "tr",
+		lang: "en",
 		className: "dark",
 		suppressHydrationWarning: true,
 		children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("head", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(HeadContent, {}) }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("body", { children: [
@@ -386,13 +395,108 @@ var Route$1 = createRootRoute({
 		] })]
 	})
 });
-var $$splitComponentImporter = () => import("./routes-DJ_isE98.mjs");
-var rootRouteChildren = { IndexRoute: createFileRoute("/")({ component: lazyRouteComponent($$splitComponentImporter, "component") }).update({
+var $$splitComponentImporter = () => import("./routes-ClH0y8nd.mjs");
+var Route$2 = createFileRoute("/")({ component: lazyRouteComponent($$splitComponentImporter, "component") });
+var OWNER_CODE = "eclipse";
+function fail$1(error) {
+	const status = typeof error === "object" && error && "status" in error ? Number(error.status) : 500;
+	const message = error instanceof Error ? error.message : "Upload failed.";
+	return Response.json({ error: message }, { status: status || 500 });
+}
+function assertOwner$1(request) {
+	if (request.headers.get("x-owner-code")?.trim().toLowerCase() !== "eclipse") throw Object.assign(/* @__PURE__ */ new Error("Wrong code."), { status: 401 });
+}
+var Route$1 = createFileRoute("/api/uploads")({ server: { handlers: {
+	GET: async () => {
+		const { listUploads } = await import("./uploads.server-BeVZhKw1.mjs");
+		const files = await listUploads();
+		return Response.json({ files });
+	},
+	POST: async ({ request }) => {
+		try {
+			assertOwner$1(request);
+			const payload = await request.json();
+			const { startUpload } = await import("./uploads.server-BeVZhKw1.mjs");
+			const created = await startUpload(String(payload.name ?? ""), Number(payload.bytes));
+			return Response.json(created);
+		} catch (error) {
+			return fail$1(error);
+		}
+	}
+} } });
+function fail(error) {
+	const status = typeof error === "object" && error && "status" in error ? Number(error.status) : 500;
+	const message = error instanceof Error ? error.message : "Upload failed.";
+	return Response.json({ error: message }, { status: status || 500 });
+}
+function assertOwner(request) {
+	if (request.headers.get("x-owner-code")?.trim().toLowerCase() !== "eclipse") throw Object.assign(/* @__PURE__ */ new Error("Wrong code."), { status: 401 });
+}
+var Route = createFileRoute("/api/uploads/$id")({ server: { handlers: {
+	GET: async ({ params }) => {
+		const { readUpload } = await import("./uploads.server-BeVZhKw1.mjs");
+		const found = await readUpload(params.id);
+		if (!found) return Response.json({ error: "Not found." }, { status: 404 });
+		return new Response(Buffer.from(found.body), { headers: {
+			"content-type": "application/octet-stream",
+			"content-length": String(found.body.byteLength),
+			"content-disposition": `attachment; filename="${found.meta.file}"`
+		} });
+	},
+	PUT: async ({ request, params }) => {
+		try {
+			assertOwner(request);
+			const index = Number(request.headers.get("x-chunk-index"));
+			const body = new Uint8Array(await request.arrayBuffer());
+			const { saveChunk } = await import("./uploads.server-BeVZhKw1.mjs");
+			await saveChunk(params.id, index, body);
+			return Response.json({ ok: true });
+		} catch (error) {
+			return fail(error);
+		}
+	},
+	POST: async ({ request, params }) => {
+		try {
+			assertOwner(request);
+			const { finishUpload } = await import("./uploads.server-BeVZhKw1.mjs");
+			const meta = await finishUpload(params.id);
+			return Response.json(meta);
+		} catch (error) {
+			return fail(error);
+		}
+	},
+	DELETE: async ({ request, params }) => {
+		try {
+			assertOwner(request);
+			const { deleteUpload } = await import("./uploads.server-BeVZhKw1.mjs");
+			await deleteUpload(params.id);
+			return Response.json({ ok: true });
+		} catch (error) {
+			return fail(error);
+		}
+	}
+} } });
+var IndexRoute = Route$2.update({
 	id: "/",
 	path: "/",
-	getParentRoute: () => Route$1
+	getParentRoute: () => Route$3
+});
+var ApiUploadsRoute = Route$1.update({
+	id: "/api/uploads",
+	path: "/api/uploads",
+	getParentRoute: () => Route$3
+});
+var ApiUploadsRouteChildren = { ApiUploadsIdRoute: Route.update({
+	id: "/$id",
+	path: "/$id",
+	getParentRoute: () => ApiUploadsRoute
 }) };
-var routeTree = Route$1._addFileChildren(rootRouteChildren)._addFileTypes();
+var rootRouteChildren = {
+	IndexRoute,
+	ApiUploadsRoute: ApiUploadsRoute._addFileChildren(ApiUploadsRouteChildren)
+};
+var routeTree = Route$3._addFileChildren(rootRouteChildren)._addFileTypes();
+var router_exports = /* @__PURE__ */ __exportAll({ getRouter: () => getRouter });
 function getRouter() {
 	return createRouter({
 		routeTree,
@@ -401,4 +505,4 @@ function getRouter() {
 	});
 }
 //#endregion
-export { getRouter, router_Doelu8UY_exports as t };
+export { OWNER_CODE as n, router_exports as t };
